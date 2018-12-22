@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JwtDemo</name>
+    </assembly>
+    <members>
+        <member name="M:JwtDemo.Controllers.AuthController.#ctor(Microsoft.Extensions.Options.IOptions{JwtDemo.JwtSetting})">
+            <summary>
+            123
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="M:JwtDemo.Controllers.AuthController.RequestToken(JwtDemo.Controllers.TokenRequest)">
+            <summary>
+            验证签发
+            </summary>
+            <param name="request">请求参数</param>
+            <returns></returns>
+        </member>
+        <member name="T:JwtDemo.Controllers.TokenRequest">
+            <summary>
+            requestInfo
+            </summary>
+        </member>
+        <member name="P:JwtDemo.Controllers.TokenRequest.UserName">
+            <summary>
+            username
+            </summary>
+        </member>
+        <member name="P:JwtDemo.Controllers.TokenRequest.Password">
+            <summary>
+            password
+            </summary>
+        </member>
+    </members>
+</doc>

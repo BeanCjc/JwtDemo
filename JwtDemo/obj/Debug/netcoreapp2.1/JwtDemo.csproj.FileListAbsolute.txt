@@ -1,0 +1,15 @@
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\bin\Debug\netcoreapp2.1\JwtDemo.deps.json
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\bin\Debug\netcoreapp2.1\JwtDemo.runtimeconfig.json
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\bin\Debug\netcoreapp2.1\JwtDemo.runtimeconfig.dev.json
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\bin\Debug\netcoreapp2.1\JwtDemo.dll
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\obj\Debug\netcoreapp2.1\JwtDemo.csprojAssemblyReference.cache
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\obj\Debug\netcoreapp2.1\JwtDemo.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\obj\Debug\netcoreapp2.1\JwtDemo.RazorAssemblyInfo.cache
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\obj\Debug\netcoreapp2.1\JwtDemo.RazorAssemblyInfo.cs
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\obj\Debug\netcoreapp2.1\JwtDemo.AssemblyInfoInputs.cache
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\obj\Debug\netcoreapp2.1\JwtDemo.AssemblyInfo.cs
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\obj\Debug\netcoreapp2.1\JwtDemo.RazorTargetAssemblyInfo.cache
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\bin\Debug\netcoreapp2.1\JwtDemo.pdb
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\obj\Debug\netcoreapp2.1\JwtDemo.dll
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\obj\Debug\netcoreapp2.1\JwtDemo.pdb
+C:\Users\Administrator\source\repos\JwtDemo\JwtDemo\bin\Debug\netcoreapp2.1\JwtDemo.xml
