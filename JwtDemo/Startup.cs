@@ -41,7 +41,7 @@ namespace JwtDemo
             var jwtSetting = Configuration.GetSection("JwtSetting").Get<JwtSetting>();
             //var varible = Configuration["JwtSetting"];
             //services.Configure<JwtSetting>(Configuration.GetSection("JwtSetting"));
-            #region  添加jwt验证：
+            #region  添加jwt验证：/
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
