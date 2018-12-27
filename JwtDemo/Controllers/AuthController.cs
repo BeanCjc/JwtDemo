@@ -77,12 +77,12 @@ namespace JwtDemo.Controllers
                 }
                 else
                 {
-                    return BadRequest("密码错误");
+                    return Ok("密码错误");
                 }
             }
             else
             {
-                return Ok("数据格式不正确");
+                return BadRequest("数据格式不正确");
             }
         }
     }
