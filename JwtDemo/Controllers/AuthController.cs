@@ -32,6 +32,15 @@ namespace JwtDemo.Controllers
         /// </summary>
         /// <param name="request">请求参数</param>
         /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /RequestToken
+        ///     {
+        ///        "UserName": "admin",
+        ///        "Password": "admin123"
+        ///     }
+        /// </remarks>
         [HttpPost]
         [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         public IActionResult RequestToken([FromBody]TokenRequest request)
@@ -46,9 +55,22 @@ namespace JwtDemo.Controllers
                 if (request.Password == user.Password)
                 {
                     //var claims = new[] { new Claim(ClaimTypes.Name, request.UserName) };
-                    var claims = new[] { new Claim(ClaimTypes.Name, request.UserName) };
+                    var claims = new List<Claim>{ new Claim(ClaimTypes.Name, request.UserName)/*,new Claim(ClaimTypes.Role,"admin")*/ };
+                    var roleLists = UserServer.GetTestUser(request.UserName);
+                    var claimsIdentity = new ClaimsIdentity();
+                    if (roleLists!=null&&roleLists.Count>0)
+                    {
+                        foreach (var role in roleLists)
+                        {
+                            claimsIdentity.AddClaim(new Claim("name", role));
+                            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
+                        }
+                    }
+                    claims.AddRange(claimsIdentity.FindAll("name"));
+                    claims.AddRange(claimsIdentity.FindAll(ClaimTypes.Role));
                     var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSetting.SecretKey));
                     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                    
 
                     var token = new JwtSecurityToken(issuer: jwtSetting.Issuer, audience: jwtSetting.Audience, claims: claims, expires: DateTime.Now.AddMinutes(20), signingCredentials: creds);
                     return Ok(new { success = true, message = "验证成功，请查看token", token = new JwtSecurityTokenHandler().WriteToken(token) });

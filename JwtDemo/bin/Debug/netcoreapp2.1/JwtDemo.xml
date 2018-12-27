@@ -11,11 +11,20 @@
             <param name="options"></param>
         </member>
         <member name="M:JwtDemo.Controllers.AuthController.RequestToken(JwtDemo.Controllers.TokenRequest)">
-            <summary>
-            验证签发
-            </summary>
-            <param name="request">请求参数</param>
-            <returns></returns>
+             <summary>
+             验证签发
+             </summary>
+             <param name="request">请求参数</param>
+             <returns></returns>
+             <remarks>
+             Sample request:
+            
+                 POST /RequestToken
+                 {
+                    "UserName": "admin",
+                    "Password": "admin123"
+                 }
+             </remarks>
         </member>
         <member name="T:JwtDemo.Controllers.TokenRequest">
             <summary>
@@ -31,6 +40,32 @@
             <summary>
             password
             </summary>
+        </member>
+        <member name="M:JwtDemo.Controllers.ValuesController.GetWithOutAuthentication">
+            <summary>
+            无需认证的action
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JwtDemo.Controllers.ValuesController.Get">
+            <summary>
+            角色是administrator或Leader的才能访问该action
+            </summary>
+            <returns></returns>
+            <response code="401">认证失败</response>
+            <response code="403">授权不通过</response>
+        </member>
+        <member name="M:JwtDemo.Controllers.ValuesController.GetDIYPolicy">
+            <summary>
+            自定义授权，年龄大于15的才能访问该action
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:JwtDemo.Controllers.ValuesController.GetTestUserPolicy">
+            <summary>
+            Function GetTestUserPolicy
+            </summary>
+            <returns></returns>
         </member>
     </members>
 </doc>

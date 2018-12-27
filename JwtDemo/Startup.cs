@@ -14,6 +14,11 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO;
 using JwtDemo.MiddleWare;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using JwtDemo.Authorization;
+using System.Security.Claims;
 
 namespace JwtDemo
 {
@@ -41,7 +46,7 @@ namespace JwtDemo
             var jwtSetting = Configuration.GetSection("JwtSetting").Get<JwtSetting>();
             //var varible = Configuration["JwtSetting"];
             //services.Configure<JwtSetting>(Configuration.GetSection("JwtSetting"));
-            #region  添加jwt验证：/
+            #region  Authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -59,15 +64,53 @@ namespace JwtDemo
                 });
             #endregion
 
+            #region Authorization
+            services.AddSingleton<IAuthorizationHandler, DIYAuthorizationHandler>();
+            services.AddAuthorization(configure =>
+            {
+                //基于角色的授权，只需在认证的时候将需要的声明添加到角色即可
+                configure.AddPolicy("admin", policy => policy.RequireClaim(ClaimTypes.Role, "Administrator", "Leader"));
+
+                //基于声明的授权，只需在认证的时候将需要的声明添加自定义的声明即可，
+                //可能会存在数据无法保证实时准确，比如我先登录验证，然后修改用户数据，这时在进行请求便会存在数据差异的情况，故可以采用基于管道或者基于中间件的方式
+                configure.AddPolicy("testuser", policy => policy.RequireClaim("name", "testuser"));
+
+                //基于管道的自定义授权策略，写法会复杂一点，但相比中间件会有更好的性能，怎么说呢，基于管道的只有在方法或控制器上有Authorise才会进入管道，而中间件则是都会进入，造成不必要的资源浪费。
+                configure.AddPolicy("DIYPolicy", policy => policy.AddRequirements(new Authorization.DIYAuthorizationData(15)));
+
+                //基于中间件的自定义授权策略，更直观。类似中间件1，2，3的写法，只是其中的内容换成管道的授权代码，这里不写
+
+
+                configure.AddPolicy("user1", policy =>
+                    policy.RequireAssertion(context =>
+                    {
+                        return context.User.HasClaim(c => c.Value == Configuration["qwe"]);
+                    }));
+
+
+            });
+            #endregion
+
             #region Swagger
             services.AddSwaggerGen(options =>
             {
                 //注册swaggerAPI文档服务
-                options.SwaggerDoc("SwaggerDocName", new Swashbuckle.AspNetCore.Swagger.Info { Version = "v1.0", Title = "Swagger Title", Description = "Swagger description" });
+                options.SwaggerDoc("SwaggerDocName", new Swashbuckle.AspNetCore.Swagger.Info
+                {
+                    Version = "v1.0",
+                    Title = "Swagger Title",
+                    Description = "Swagger description\r\n" +
+                    "Test User Data:\r\n" +
+                    "new User { Id = Guid.NewGuid().ToString(), UserName = \"admin\", Password = \"admin123\", UserRoles = new List<string> { \"Administrator\",\"Leader\",\"Manager\",\"Common\"}, Age = 12},\r\n" +
+                    "new User { Id = Guid.NewGuid().ToString(), UserName = \"Bean\", Password = \"Bean123\", UserRoles = new List<string> { \"Leader\", \"Manager\" }, Age = 15 },\r\n" +
+                    "new User { Id = Guid.NewGuid().ToString(), UserName = \"Lisa\", Password = \"Lisa123\", UserRoles = new List<string> { \"Common \" }, Age = 18 },\r\n" +
+                    "new User { Id = Guid.NewGuid().ToString(), UserName = \"testuser\", Password = \"testuser123\", UserRoles = new List<string> { \"username\", \"usernamerole\", \"testuser\" }, Age = 22 }"
+                });
                 //添加注释
-                var basePath = Microsoft.DotNet.PlatformAbstractions.ApplicationEnvironment.ApplicationBasePath;
-                options.IncludeXmlComments(Path.Combine(basePath, "JwtDemo.xml"));
-                //options.IncludeXmlComments(Path.Combine(Directory.GetCurrentDirectory(), "JwtDemo.xml"));
+                //var basePath = Microsoft.DotNet.PlatformAbstractions.ApplicationEnvironment.ApplicationBasePath;
+                //var basePath = Directory.GetCurrentDirectory();
+                //options.IncludeXmlComments(Path.Combine(basePath, "JwtDemo.xml"));
+                options.IncludeXmlComments(Path.Combine(Directory.GetCurrentDirectory(), "JwtDemo.xml"));
                 options.AddSecurityDefinition("Bearer", new Swashbuckle.AspNetCore.Swagger.ApiKeyScheme { Name = "Authorization", In = "header", Description = "Format: Bearer {auth_token}" });
 
                 //jwt认证方式，此方式为全局添加
@@ -76,24 +119,6 @@ namespace JwtDemo
             #endregion
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-
-
-
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(option =>
-            //    {
-            //        option.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-            //        {
-            //            ValidateIssuer = true,
-            //            ValidateAudience = true,
-            //            ValidateLifetime = true,
-            //            ValidateIssuerSigningKey = true,
-            //            ValidIssuer = "https://localhost:44389",
-            //            ValidAudience = "https://localhost:44389",
-            //            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["SecurityKey"]))
-            //        };
-            //    });
-            //    services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -108,11 +133,14 @@ namespace JwtDemo
                 Console.WriteLine("Third Out");
 
             });
+
+            //app.UseStaticFiles();
             app.UseAuthentication();
             app.UseSwagger().UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/SwaggerDocName/swagger.json", "Swagger Endpoint Name");
             });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

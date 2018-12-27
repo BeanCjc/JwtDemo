@@ -11,5 +11,9 @@ namespace JwtDemo.TestData
         {
             return TestUsers.users.FirstOrDefault(t => t.UserName == userName);
         }
+        public static List<string> GetTestUser(string userName)
+        {
+            return TestUsers.users.FirstOrDefault(t => t.UserName == userName)?.UserRoles;
+        }
     }
 }
